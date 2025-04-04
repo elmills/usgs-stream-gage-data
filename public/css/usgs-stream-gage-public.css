@@ -1,0 +1,197 @@
+/**
+ * USGS Stream Gage - Public CSS
+ * Styles for the shortcode display
+ */
+
+/* Container */
+.usgs-stream-gage-data {
+    margin: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 100%;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* Site Header */
+.usgs-site-header {
+    margin-bottom: 15px;
+}
+
+.usgs-site-name {
+    margin: 0 0 5px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.usgs-site-number {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Section Headers */
+.usgs-current-data h4,
+.usgs-historical-data h4 {
+    border-bottom: 2px solid #e5e5e5;
+    padding-bottom: 5px;
+    margin: 20px 0 15px;
+    font-size: 1.2em;
+}
+
+.usgs-current-datetime {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Tables */
+.usgs-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+}
+
+.usgs-data-table th,
+.usgs-data-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.usgs-data-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.usgs-data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.usgs-data-table tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* High/Low Values */
+.usgs-high {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.usgs-low {
+    color: #1976d2;
+    font-weight: bold;
+}
+
+/* Tabs */
+.usgs-period-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 15px;
+}
+
+.usgs-period-tab {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    margin-right: 5px;
+    margin-bottom: -1px;
+    cursor: pointer;
+    font-size: 0.95em;
+    border-radius: 4px 4px 0 0;
+}
+
+.usgs-period-tab:hover {
+    background-color: #f5f5f5;
+}
+
+.usgs-period-tab.active {
+    background-color: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-bottom: 1px solid #f5f5f5;
+    font-weight: bold;
+}
+
+/* Error Messages */
+.usgs-error {
+    padding: 10px 15px;
+    background-color: #fbeaea;
+    border-left: 4px solid #dc3232;
+    margin-bottom: 15px;
+}
+
+/* Footer */
+.usgs-footer {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 0.85em;
+}
+
+.usgs-footer a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.usgs-footer a:hover {
+    color: #00a0d2;
+    text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .usgs-data-table {
+        font-size: 0.9em;
+    }
+    
+    .usgs-data-table th,
+    .usgs-data-table td {
+        padding: 6px 8px;
+    }
+    
+    .usgs-period-tab {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .usgs-period-tabs {
+        flex-direction: column;
+        border-bottom: none;
+    }
+    
+    .usgs-period-tab {
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+    
+    .usgs-period-tab.active {
+        border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .usgs-data-table {
+        font-size: 0.85em;
+    }
+    
+    .usgs-data-table th,
+    .usgs-data-table td {
+        padding: 5px 6px;
+    }
+    
+    /* Stack historical table cells */
+    .usgs-historical-data .usgs-data-table th:nth-child(3),
+    .usgs-historical-data .usgs-data-table th:nth-child(5),
+    .usgs-historical-data .usgs-data-table td:nth-child(3),
+    .usgs-historical-data .usgs-data-table td:nth-child(5) {
+        display: none;
+    }
+    
+    .usgs-historical-data .usgs-data-table td:nth-child(2)::after,
+    .usgs-historical-data .usgs-data-table td:nth-child(4)::after {
+        display: block;
+        content: attr(data-date);
+        font-size: 0.85em;
+        color: #777;
+        margin-top: 3px;
+    }
+}

@@ -1,0 +1,131 @@
+/**
+ * USGS Stream Gage - Admin CSS
+ * Styles for the admin settings page
+ */
+
+/* Container */
+.usgs-sites-container {
+    margin: 20px 0;
+}
+
+.usgs-sites-header,
+.usgs-sites-actions {
+    margin-bottom: 20px;
+}
+
+/* Tables */
+.usgs-sites-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.usgs-sites-table th,
+.usgs-sites-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.usgs-sites-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.usgs-sites-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.usgs-sites-table code {
+    padding: 3px 5px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Add Site Form */
+.usgs-add-site-container {
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.usgs-add-site-option {
+    margin-bottom: 15px;
+}
+
+.usgs-add-site-option label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.usgs-add-by-number,
+.usgs-search-sites {
+    margin-top: 10px;
+    margin-left: 25px;
+}
+
+.usgs-add-by-number input,
+.usgs-search-sites input {
+    width: 250px;
+    margin-right: 10px;
+}
+
+.usgs-search-results {
+    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+}
+
+.usgs-search-result {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.usgs-search-result:hover {
+    background-color: #f5f5f5;
+}
+
+.usgs-search-result-name {
+    font-weight: bold;
+}
+
+.usgs-search-result-number {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Spinners and Messages */
+.spinner {
+    float: none;
+    margin-top: 4px;
+}
+
+.usgs-message {
+    margin: 15px 0;
+    padding: 10px 15px;
+    border-left: 4px solid;
+}
+
+.usgs-message.error {
+    border-color: #dc3232;
+    background-color: #fbeaea;
+}
+
+.usgs-message.success {
+    border-color: #46b450;
+    background-color: #ecf7ed;
+}
+
+/* Buttons */
+.copy-shortcode {
+    margin-left: 8px;
+}
