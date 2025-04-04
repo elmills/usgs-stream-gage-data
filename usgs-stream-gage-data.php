@@ -3,7 +3,7 @@
  * Plugin Name: USGS Stream Gage Data
  * Plugin URI: https://elmills.net/usgs-stream-gage-data
  * Description: A modern WordPress plugin that allows users to specify USGS stream gages and display their data using shortcodes.
- * Version: 1.2.3
+ * Version: 1.2.4
  * Author: Everette Mills
  * Author URI: https://elmills.net
  * Text Domain: usgs-stream-gage-data
@@ -18,7 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define plugin constants
-define( 'USGS_STREAM_GAGE_VERSION', '1.2.3' );
+define( 'USGS_STREAM_GAGE_VERSION', '1.2.4' );
 define( 'USGS_STREAM_GAGE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -27,7 +27,7 @@ define( 'USGS_STREAM_GAGE_FONTAWESOME_URL', 'https://cdnjs.cloudflare.com/ajax/l
 // Include required files
 require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-usgs-stream-gage.php';
 
-// Include the Plugin Update Checker library directly from its installed location
+// Include the Plugin Update Checker library
 $pucPath = USGS_STREAM_GAGE_PLUGIN_DIR . 'plugin-update-checker-5.2/plugin-update-checker.php';
 if (file_exists($pucPath)) {
     require_once $pucPath;
@@ -47,14 +47,19 @@ function usgs_stream_gage_init() {
     // Set up GitHub updater with hardcoded repository URL
     $github_repo = 'elmills/usgs-stream-gage-data';
     
-    // Initialize the updater with the GitHub repository using v5 factory
-    // Only if the class exists
-    if (class_exists('Puc_v5_Factory')) {
-        $update_checker = Puc_v5_Factory::buildUpdateChecker(
-            'https://github.com/' . $github_repo,
+    // Initialize the updater with the GitHub repository
+    if (class_exists('Puc_v5p2_Factory')) {
+        $updateChecker = Puc_v5p2_Factory::buildUpdateChecker(
+            'https://github.com/' . $github_repo . '/',
             __FILE__,
             'usgs-stream-gage-data'
         );
+
+        // Set the branch that contains the stable release
+        $updateChecker->setBranch('main');
+        
+        // Optional: Enable release assets instead of using source code zip
+        $updateChecker->getVcsApi()->enableReleaseAssets();
     }
 }
 add_action( 'plugins_loaded', 'usgs_stream_gage_init' );

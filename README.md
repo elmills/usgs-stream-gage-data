@@ -77,6 +77,13 @@ This plugin uses the USGS Water Services API:
 
 ## Changelog
 
+### 1.2.4
+- FIX: Improved data caching mechanism for better performance
+- FIX: Resolved compatibility issues with PHP 8.1
+- FIX: Enhanced error handling for API timeout scenarios
+- FEATURE: Added more detailed logging for API requests
+- FEATURE: Optimized database queries for settings retrieval
+
 ### 1.2.3
 - Fixed site validation cache handling
 - Improved error checking for cached validation data
