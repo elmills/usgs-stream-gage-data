@@ -22,6 +22,15 @@ class USGS_Stream_Gage_API {
     const USGS_SITE_SERVICE_URL = 'https://waterservices.usgs.gov/nwis/site/';
 
     /**
+     * Cache expiration times in seconds
+     * 
+     * @since    1.1.0
+     * @access   private
+     * @var      array    $cache_expiration    Expiration times for different types of cached data.
+     */
+    private $cache_expiration;
+
+    /**
      * Initialize the class.
      *
      * @since    1.0.0

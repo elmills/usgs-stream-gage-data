@@ -47,10 +47,12 @@ class USGS_Stream_Gage_Admin {
     public function __construct( $plugin_name, $version ) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->api = new USGS_Stream_Gage_API();
         
-        // Make sure the logger class is loaded
+        // Make sure the logger class is loaded first
         require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-usgs-stream-gage-logger.php';
+        
+        // Initialize API after logger is loaded
+        $this->api = new USGS_Stream_Gage_API();
         
         // Register AJAX handlers
         add_action( 'wp_ajax_usgs_validate_site', array( $this, 'ajax_validate_site' ) );
@@ -186,6 +188,7 @@ class USGS_Stream_Gage_Admin {
         );
     }
 
+    
     /**
      * Validate sites setting before saving.
      *

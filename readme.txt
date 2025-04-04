@@ -3,7 +3,7 @@ Contributors: elmills
 Tags: usgs, stream gage, water data, river, shortcode
 Requires at least: 5.0
 Tested up to: 6.3
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,7 @@ The USGS Stream Gage Data plugin allows you to easily display real-time and hist
 * **Validation**: Built-in site validation ensures data availability
 * **Caching**: Efficient caching system reduces API calls and improves performance
 * **Troubleshooting Tools**: API logging system helps diagnose any issues with site validation or searches
+* **GitHub Updates**: Support for automatic updates from GitHub repositories using release tags
 
 = Use Cases =
 
@@ -81,6 +82,13 @@ Each parameter can be set to "yes" or "no" to show or hide specific data element
 
 == Changelog ==
 
+= 1.2.0 =
+* FIX: Corrected initialization order in the admin class to ensure Logger is loaded before API instance
+* FIX: Added proper declaration of cache_expiration property in API class
+* FIX: Resolved issues with site validation not working correctly
+* FIX: Fixed bug that prevented sites from being added to the Current Sites list
+* FEATURE: Added GitHub updates support for managing plugin updates directly from a GitHub repository
+
 = 1.1.0 =
 * FEATURE: Moved plugin menu from Settings submenu to top-level admin menu for better visibility
 * FEATURE: Added comprehensive API logging system for troubleshooting site validation and search issues
@@ -92,6 +100,9 @@ Each parameter can be set to "yes" or "no" to show or hide specific data element
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+This update fixes critical bugs that prevented site validation from working properly. If you've been having issues adding sites, this update should resolve them.
 
 = 1.1.0 =
 This update adds a more accessible menu location and powerful logging tools to help troubleshoot any issues with USGS site validation or searches.
@@ -140,6 +151,18 @@ If you encounter issues with site validation or searches:
 * **Invalid Site Number**: Check the API Logs for validation errors. Some sites may be inactive or may not have the required data parameters.
 * **No Search Results**: The search term may be too specific. Try a broader search term or check the API Logs for details on the search request.
 * **Site Validation Failures**: The API Logs will show exactly why validation failed, including API response codes and error messages.
+
+= Setting Up GitHub Updates =
+
+The plugin supports automatic updates from GitHub. The GitHub repository URL is hardcoded in the plugin's main file:
+
+1. Open `usgs-stream-gage-data.php`
+2. Locate the line with `$github_repo = 'username/usgs-stream-gage-data';`
+3. Replace `username/usgs-stream-gage-data` with your actual GitHub repository in the format `username/repository-name`
+
+After properly setting the repository URL and pushing the plugin to that GitHub repository, WordPress will automatically check for new releases. When you create a new release/tag on GitHub that has a higher version number than the currently installed plugin, WordPress will automatically detect and offer the update.
+
+**Note:** Make sure to create GitHub releases with tag names that match the plugin version (e.g., "1.2.0").
 
 == About USGS Data ==
 
