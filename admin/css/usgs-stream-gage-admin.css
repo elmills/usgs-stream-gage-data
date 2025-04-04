@@ -3,6 +3,19 @@
  * Styles for the admin settings page
  */
 
+/* Custom Menu Icon Style */
+#adminmenu .toplevel_page_usgs-stream-gage-data .wp-menu-image img {
+    width: 20px;
+    height: 20px;
+    padding: 7px 0 0 0;
+    opacity: 0.6;
+}
+
+#adminmenu .toplevel_page_usgs-stream-gage-data:hover .wp-menu-image img,
+#adminmenu .toplevel_page_usgs-stream-gage-data.current .wp-menu-image img {
+    opacity: 1;
+}
+
 /* Container */
 .usgs-sites-container {
     margin: 20px 0;

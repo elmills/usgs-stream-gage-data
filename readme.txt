@@ -3,9 +3,10 @@ Contributors: elmills
 Tags: usgs, stream gage, water data, river, shortcode
 Requires at least: 5.0
 Tested up to: 6.3
-Stable tag: 1.2.1
+Stable tag: 1.2.2
+Requires PHP: 7.2
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Display USGS stream gage data on your WordPress site with shortcodes, including current and historical water levels and flow data.
 
@@ -67,9 +68,7 @@ Some USGS sites may be inactive or may not collect the required parameters (disc
 
 Yes, you can use the shortcode parameters to control which data elements are displayed:
 
-```
 [usgs_stream_gage id="site_id" show_discharge="yes" show_gage_height="yes" show_24h="yes" show_7d="yes" show_30d="yes" show_1y="yes"]
-```
 
 Each parameter can be set to "yes" or "no" to show or hide specific data elements.
 
@@ -81,6 +80,14 @@ Each parameter can be set to "yes" or "no" to show or hide specific data element
 4. Site search functionality
 
 == Changelog ==
+
+= 1.2.2 =
+* FIX: Improved site validation process with better error handling
+* FIX: Enhanced error handling in admin JavaScript interface
+* FIX: Resolved UI issues when adding stream gage sites by number or search
+* FIX: Optimized AJAX request processing for better performance
+* FIX: Added robust type checking to prevent crashes with malformed data
+* FEATURE: Updated automatic GitHub updates library to latest version
 
 = 1.2.1 =
 * FIX: Added robust error handling in JavaScript to prevent crashes when adding site numbers
@@ -104,29 +111,17 @@ Each parameter can be set to "yes" or "no" to show or hide specific data element
 = 1.0.0 =
 * Initial release
 
-== Upgrade Notice ==
-
-= 1.2.0 =
-This update fixes critical bugs that prevented site validation from working properly. If you've been having issues adding sites, this update should resolve them.
-
-= 1.1.0 =
-This update adds a more accessible menu location and powerful logging tools to help troubleshoot any issues with USGS site validation or searches.
-
 == Usage ==
 
 = Basic Shortcode =
 
-```
 [usgs_stream_gage id="site_id"]
-```
 
 Replace `site_id` with the ID shown in the admin sites table.
 
 = Shortcode with All Parameters =
 
-```
 [usgs_stream_gage id="site_id" show_discharge="yes" show_gage_height="yes" show_24h="yes" show_7d="yes" show_30d="yes" show_1y="yes"]
-```
 
 = Adding Stream Gage Sites =
 

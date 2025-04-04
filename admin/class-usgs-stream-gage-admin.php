@@ -66,7 +66,11 @@ class USGS_Stream_Gage_Admin {
      * @since    1.0.0
      */
     public function enqueue_styles() {
+        // Enqueue the main admin stylesheet
         wp_enqueue_style( $this->plugin_name, USGS_STREAM_GAGE_PLUGIN_URL . 'admin/css/usgs-stream-gage-admin.css', array(), $this->version, 'all' );
+        
+        // Enqueue Font Awesome for the admin icon
+        wp_enqueue_style( $this->plugin_name . '-fontawesome', USGS_STREAM_GAGE_FONTAWESOME_URL, array(), '6.4.2', 'all' );
     }
 
     /**
@@ -137,13 +141,16 @@ class USGS_Stream_Gage_Admin {
      * @modified 1.1.0 Changed from add_options_page to add_menu_page for better visibility
      */
     public function add_menu_page() {
+        // Create custom menu icon using Font Awesome water icon
+        $icon_url = 'data:image/svg+xml;base64,' . base64_encode('<svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M562.1 383.9c-21.5-2.4-42.1-10.5-57.9-22.9-14.1-11.1-34.2-11.3-48.2 0-37.9 30.4-107.2 30.4-145.7-1.5-13.5-11.2-33-9.1-43.7 1.8-24.4 24.9-61.2 38.6-98.9 38.6-72.7 0-131.8-60.7-131.8-134.9 0-104.8 80.3-140.6 140.5-140.6 13.5 0 27.1 2.1 40.8 6.4 14.5 4.5 30.3 2.9 43.5-4.3 37.2-20.4 83.4-20.4 120.5 0 13.5 7.2 29.3 8.9 44.5 4.3 13.1-4.1 26.7-6.4 40.9-6.4 54.6 0 108.8 24 140.5 85.5 19.1 36 23 98.9-20.1 131.6-21.5 16.2-48.3 25.1-76.8 25.1-26.4 0-51.8-7.7-63.8-14.7z"></path></svg>');
+        
         add_menu_page(
             __( 'USGS Stream Gage Settings', 'usgs-stream-gage-data' ),
             __( 'USGS Stream Gages', 'usgs-stream-gage-data' ),
             'manage_options',
             $this->plugin_name,
             array( $this, 'display_options_page' ),
-            'dashicons-water',
+            $icon_url,
             30
         );
     }
@@ -367,6 +374,16 @@ class USGS_Stream_Gage_Admin {
             ) );
         }
         
+        // Log validation attempt for debugging
+        USGS_Stream_Gage_Logger::log(
+            'AJAX site validation attempt',
+            array(
+                'site_number' => $site_number,
+                'request' => $_POST
+            ),
+            USGS_Stream_Gage_Logger::LOG_LEVEL_DEBUG
+        );
+        
         // Validate the site using API
         $validation = $this->api->validate_site( $site_number );
         
@@ -375,6 +392,32 @@ class USGS_Stream_Gage_Admin {
                 'message' => __( 'Invalid or inactive USGS site number. Please verify and try again.', 'usgs-stream-gage-data' )
             ) );
         }
+        
+        // Ensure site data is properly structured
+        if (!is_array($validation) || empty($validation['site_number']) || empty($validation['site_name'])) {
+            // Log the malformed response for debugging
+            USGS_Stream_Gage_Logger::log(
+                'Site validation returned malformed data',
+                array(
+                    'site_number' => $site_number,
+                    'validation_result' => $validation
+                ),
+                USGS_Stream_Gage_Logger::LOG_LEVEL_ERROR
+            );
+            
+            wp_send_json_error(array(
+                'message' => __('The site was found but returned invalid data. Please try again.', 'usgs-stream-gage-data')
+            ));
+        }
+        
+        // Log successful validation
+        USGS_Stream_Gage_Logger::log(
+            'Site validated successfully via AJAX',
+            array(
+                'site_number' => $site_number,
+                'site_name' => $validation['site_name']
+            )
+        );
         
         // Site is valid, return the site data
         wp_send_json_success( array(

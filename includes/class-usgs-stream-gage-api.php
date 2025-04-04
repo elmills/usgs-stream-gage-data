@@ -85,7 +85,7 @@ class USGS_Stream_Gage_API {
             return $cached_data;
         }
         
-        // Build the API URL
+        // Build the API URL - Use IV service for better site detail
         $args = [
             'format' => 'json',
             'sites' => $site_number,
@@ -93,7 +93,7 @@ class USGS_Stream_Gage_API {
         ];
         
         // Log the API request
-        $url = USGS_Stream_Gage_Logger::log_request( self::USGS_SITE_SERVICE_URL, $args );
+        $url = USGS_Stream_Gage_Logger::log_request( self::USGS_IV_SERVICE_URL, $args );
         
         // Make the API request
         $response = wp_remote_get( $url );
@@ -110,7 +110,7 @@ class USGS_Stream_Gage_API {
         }
         
         // Log the response
-        USGS_Stream_Gage_Logger::log_response( self::USGS_SITE_SERVICE_URL, $args, $response );
+        USGS_Stream_Gage_Logger::log_response( self::USGS_IV_SERVICE_URL, $args, $response );
         
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body, true );
@@ -131,20 +131,45 @@ class USGS_Stream_Gage_API {
             return false;
         }
         
+        // Extra validation to ensure we have required data
+        if (empty($data['value']['timeSeries'][0]['sourceInfo']['siteName']) ||
+            empty($data['value']['timeSeries'][0]['sourceInfo']['siteCode'][0]['value'])) {
+            
+            USGS_Stream_Gage_Logger::log(
+                'USGS site missing required fields', 
+                array(
+                    'site_number' => $site_number,
+                    'timeSeries' => $data['value']['timeSeries'][0]
+                ),
+                USGS_Stream_Gage_Logger::LOG_LEVEL_ERROR
+            );
+            
+            return false;
+        }
+        
         // Site is valid, extract and cache basic site info
         $site_data = [
             'site_number' => $site_number,
             'site_name' => $data['value']['timeSeries'][0]['sourceInfo']['siteName'],
-            'latitude' => $data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['latitude'],
-            'longitude' => $data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['longitude'],
+            'id' => 'usgs_' . uniqid(),
         ];
+        
+        // Add coordinates if available
+        if (!empty($data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['latitude'])) {
+            $site_data['latitude'] = $data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['latitude'];
+        }
+        
+        if (!empty($data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['longitude'])) {
+            $site_data['longitude'] = $data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['longitude'];
+        }
         
         // Log successful validation
         USGS_Stream_Gage_Logger::log(
             'USGS site validated successfully',
             array(
                 'site_number' => $site_number,
-                'site_name' => $site_data['site_name']
+                'site_name' => $site_data['site_name'],
+                'site_data' => $site_data
             )
         );
         

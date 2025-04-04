@@ -60,18 +60,18 @@
                     site_number: siteNumber
                 },
                 success: function(response) {
-                    if (response.success) {
+                    if (response.success && response.data && response.data.site) {
                         // Add site to the list
                         addSiteToList(response.data.site);
                         
                         // Show success message
-                        showMessage('success', response.data.message);
+                        showMessage('success', response.data.message || 'Site validated successfully.');
                         
                         // Clear input
                         $siteNumber.val('');
                     } else {
                         // Show error message
-                        showMessage('error', response.data.message);
+                        showMessage('error', (response.data && response.data.message) ? response.data.message : 'Invalid response from server.');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -205,6 +205,13 @@
          * @param {Object|string} site Site data object or JSON string
          */
         function addSiteToList(site) {
+            // Make sure site is valid
+            if (!site) {
+                console.error('Invalid site data: Site is null or undefined');
+                showMessage('error', 'Invalid site data. Please try again.');
+                return;
+            }
+
             // Ensure site is an object
             if (typeof site === 'string') {
                 try {
@@ -216,10 +223,11 @@
                 }
             }
             
-            // Ensure site is an object before continuing
-            if (typeof site !== 'object' || site === null) {
-                console.error('Invalid site data:', site);
-                showMessage('error', 'Invalid site data format. Please try again.');
+            // Ensure site is a valid object with required properties
+            if (typeof site !== 'object' || site === null || 
+                !site.site_number || !site.site_name) {
+                console.error('Invalid site data structure:', site);
+                showMessage('error', 'Invalid or incomplete site data. Please try again.');
                 return;
             }
             
@@ -231,6 +239,10 @@
             // Set validation flag
             site.is_validated = true;
             
+            // Default latitude/longitude to empty strings if not provided
+            site.latitude = site.latitude || '';
+            site.longitude = site.longitude || '';
+
             // Remove "no sites" message if present
             if ($sitesList.find('.no-sites').length) {
                 $sitesList.empty();
