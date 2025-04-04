@@ -156,6 +156,22 @@ class USGS_Stream_Gage_Admin {
     }
 
     /**
+     * Register the admin menu
+     */
+    public function register_admin_menu() {
+        // Use dashicons-water instead of trying to use Font Awesome
+        add_menu_page(
+            __('USGS Stream Gages', 'usgs-stream-gage-data'),
+            __('USGS Stream Gages', 'usgs-stream-gage-data'),
+            'manage_options',
+            'usgs-stream-gage',
+            array($this, 'display_admin_page'),
+            'dashicons-water', // Use built-in WordPress Dashicons water icon
+            30
+        );
+    }
+
+    /**
      * Render the options page.
      *
      * @since    1.0.0
@@ -387,6 +403,7 @@ class USGS_Stream_Gage_Admin {
         // Validate the site using API
         $validation = $this->api->validate_site( $site_number );
         
+        // Improved error handling - specifically look for boolean false
         if ( $validation === false ) {
             wp_send_json_error( array(
                 'message' => __( 'Invalid or inactive USGS site number. Please verify and try again.', 'usgs-stream-gage-data' )
@@ -395,15 +412,20 @@ class USGS_Stream_Gage_Admin {
         
         // Ensure site data is properly structured
         if (!is_array($validation) || empty($validation['site_number']) || empty($validation['site_name'])) {
-            // Log the malformed response for debugging
+            // More detailed logging of the malformed response
             USGS_Stream_Gage_Logger::log(
                 'Site validation returned malformed data',
                 array(
                     'site_number' => $site_number,
-                    'validation_result' => $validation
+                    'validation_result' => $validation,
+                    'is_array' => is_array($validation),
+                    'data_type' => gettype($validation)
                 ),
                 USGS_Stream_Gage_Logger::LOG_LEVEL_ERROR
             );
+            
+            // Clear the cache for this site to force fresh validation next time
+            delete_transient('usgs_site_validation_' . sanitize_key($site_number));
             
             wp_send_json_error(array(
                 'message' => __('The site was found but returned invalid data. Please try again.', 'usgs-stream-gage-data')

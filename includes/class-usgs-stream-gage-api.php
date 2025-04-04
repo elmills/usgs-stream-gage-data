@@ -78,11 +78,47 @@ class USGS_Stream_Gage_API {
                 array(
                     'site_number' => $site_number,
                     'cache_key' => $cache_key,
-                    'has_data' => ( $cached_data !== false )
-                )
+                    'has_data' => ( $cached_data !== false ),
+                    'cached_data_type' => gettype($cached_data)
+                ),
+                USGS_Stream_Gage_Logger::LOG_LEVEL_DEBUG
             );
             
-            return $cached_data;
+            // If the cached data is boolean false, correctly return false
+            // Previously this check wasn't being done properly
+            if ($cached_data === false || (is_array($cached_data) && empty($cached_data))) {
+                USGS_Stream_Gage_Logger::log(
+                    'Site validation failed (from cache)',
+                    array(
+                        'site_number' => $site_number,
+                        'reason' => 'Site was previously validated as invalid'
+                    ),
+                    USGS_Stream_Gage_Logger::LOG_LEVEL_WARNING
+                );
+                
+                return false;
+            }
+            
+            // Verify the structure of cached data
+            if (is_array($cached_data) && 
+                isset($cached_data['site_number']) && 
+                isset($cached_data['site_name'])) {
+                return $cached_data;
+            } else {
+                // Invalid cache structure - log and continue with validation
+                USGS_Stream_Gage_Logger::log(
+                    'Cached validation data is malformed',
+                    array(
+                        'site_number' => $site_number,
+                        'cached_data' => $cached_data
+                    ),
+                    USGS_Stream_Gage_Logger::LOG_LEVEL_WARNING
+                );
+                
+                // Delete the invalid cache
+                delete_transient($cache_key);
+                // Continue to validate from API
+            }
         }
         
         // Build the API URL - Use IV service for better site detail
@@ -144,6 +180,8 @@ class USGS_Stream_Gage_API {
                 USGS_Stream_Gage_Logger::LOG_LEVEL_ERROR
             );
             
+            // Set transient to false to cache the invalid result
+            set_transient( $cache_key, false, $this->cache_expiration['site_validation'] );
             return false;
         }
         
