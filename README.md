@@ -77,6 +77,13 @@ This plugin uses the USGS Water Services API:
 
 ## Changelog
 
+### 1.2.5
+- FEATURE: Enhanced visual distinction between time period headers with improved color contrast
+- FEATURE: Improved readability of data tables with better styling for headers and rows
+- FEATURE: Optimized CSS for better visual hierarchy in shortcode output
+- FIX: Corrected admin menu icon display issue using Font Awesome water icon
+- FIX: Improved SVG icon handling in WordPress admin interface
+
 ### 1.2.4
 - FIX: Improved data caching mechanism for better performance
 - FIX: Resolved compatibility issues with PHP 8.1
