@@ -36,6 +36,9 @@ class USGS_Stream_Gage_API {
             '30d_data'        => 7200,  // 2 hours
             '1y_data'         => 14400, // 4 hours
         ];
+        
+        // Make sure the logger class is loaded
+        require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-usgs-stream-gage-logger.php';
     }
 
     /**
@@ -46,11 +49,30 @@ class USGS_Stream_Gage_API {
      * @return   bool|array                False if invalid, site data array if valid.
      */
     public function validate_site( $site_number ) {
+        // Log validation attempt
+        USGS_Stream_Gage_Logger::log(
+            'Validating USGS site',
+            array(
+                'site_number' => $site_number,
+                'method' => 'validate_site'
+            )
+        );
+        
         // Check transient cache first
         $cache_key = 'usgs_site_validation_' . sanitize_key( $site_number );
         $cached_data = get_transient( $cache_key );
         
         if ( false !== $cached_data ) {
+            // Log cache hit
+            USGS_Stream_Gage_Logger::log(
+                'Using cached validation data',
+                array(
+                    'site_number' => $site_number,
+                    'cache_key' => $cache_key,
+                    'has_data' => ( $cached_data !== false )
+                )
+            );
+            
             return $cached_data;
         }
         
@@ -61,15 +83,25 @@ class USGS_Stream_Gage_API {
             'siteStatus' => 'active'
         ];
         
-        $url = add_query_arg( $args, self::USGS_SITE_SERVICE_URL );
+        // Log the API request
+        $url = USGS_Stream_Gage_Logger::log_request( self::USGS_SITE_SERVICE_URL, $args );
         
         // Make the API request
         $response = wp_remote_get( $url );
         
         // Check for errors
         if ( is_wp_error( $response ) ) {
+            // Log the error
+            USGS_Stream_Gage_Logger::log_error(
+                'API Error validating site',
+                $response
+            );
+            
             return false;
         }
+        
+        // Log the response
+        USGS_Stream_Gage_Logger::log_response( self::USGS_SITE_SERVICE_URL, $args, $response );
         
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body, true );
@@ -77,6 +109,15 @@ class USGS_Stream_Gage_API {
         // Validate the response
         if ( empty( $data['value']['timeSeries'] ) ) {
             // Site not found or not active
+            USGS_Stream_Gage_Logger::log(
+                'Invalid USGS site', 
+                array(
+                    'site_number' => $site_number,
+                    'response' => 'No time series data found'
+                ),
+                USGS_Stream_Gage_Logger::LOG_LEVEL_WARNING
+            );
+            
             set_transient( $cache_key, false, $this->cache_expiration['site_validation'] );
             return false;
         }
@@ -88,6 +129,15 @@ class USGS_Stream_Gage_API {
             'latitude' => $data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['latitude'],
             'longitude' => $data['value']['timeSeries'][0]['sourceInfo']['geoLocation']['geogLocation']['longitude'],
         ];
+        
+        // Log successful validation
+        USGS_Stream_Gage_Logger::log(
+            'USGS site validated successfully',
+            array(
+                'site_number' => $site_number,
+                'site_name' => $site_data['site_name']
+            )
+        );
         
         set_transient( $cache_key, $site_data, $this->cache_expiration['site_validation'] );
         
@@ -102,6 +152,15 @@ class USGS_Stream_Gage_API {
      * @return   array                   Array of matching sites.
      */
     public function search_sites_by_name( $site_name ) {
+        // Log search attempt
+        USGS_Stream_Gage_Logger::log(
+            'Searching for USGS sites',
+            array(
+                'search_term' => $site_name,
+                'method' => 'search_sites_by_name'
+            )
+        );
+        
         // Build the API URL
         $args = [
             'format' => 'json',
@@ -111,15 +170,25 @@ class USGS_Stream_Gage_API {
             'hasDataTypeCd' => 'iv'         // Only sites with instantaneous values
         ];
         
-        $url = add_query_arg( $args, self::USGS_SITE_SERVICE_URL );
+        // Log the API request
+        $url = USGS_Stream_Gage_Logger::log_request( self::USGS_SITE_SERVICE_URL, $args );
         
         // Make the API request
         $response = wp_remote_get( $url );
         
         // Check for errors
         if ( is_wp_error( $response ) ) {
+            // Log the error
+            USGS_Stream_Gage_Logger::log_error(
+                'API Error searching sites',
+                $response
+            );
+            
             return [];
         }
+        
+        // Log the response
+        USGS_Stream_Gage_Logger::log_response( self::USGS_SITE_SERVICE_URL, $args, $response );
         
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body, true );
@@ -136,6 +205,24 @@ class USGS_Stream_Gage_API {
                     'longitude' => $site['geoLocation']['geogLocation']['longitude'],
                 ];
             }
+            
+            // Log successful search
+            USGS_Stream_Gage_Logger::log(
+                'USGS sites found',
+                array(
+                    'search_term' => $site_name,
+                    'sites_found' => count( $sites )
+                )
+            );
+        } else {
+            // Log no sites found
+            USGS_Stream_Gage_Logger::log(
+                'No USGS sites found', 
+                array(
+                    'search_term' => $site_name
+                ),
+                USGS_Stream_Gage_Logger::LOG_LEVEL_WARNING
+            );
         }
         
         return $sites;

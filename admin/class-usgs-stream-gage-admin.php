@@ -49,9 +49,13 @@ class USGS_Stream_Gage_Admin {
         $this->version = $version;
         $this->api = new USGS_Stream_Gage_API();
         
+        // Make sure the logger class is loaded
+        require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-usgs-stream-gage-logger.php';
+        
         // Register AJAX handlers
         add_action( 'wp_ajax_usgs_validate_site', array( $this, 'ajax_validate_site' ) );
         add_action( 'wp_ajax_usgs_search_sites', array( $this, 'ajax_search_sites' ) );
+        add_action( 'wp_ajax_usgs_clear_logs', array( $this, 'ajax_clear_logs' ) );
     }
 
     /**
@@ -79,17 +83,66 @@ class USGS_Stream_Gage_Admin {
     }
 
     /**
-     * Add options page to the admin menu.
+     * Display logs in the admin area.
+     *
+     * @since    1.1.0
+     */
+    public function display_logs() {
+        // Get log stats
+        $logs_stats = USGS_Stream_Gage_Logger::get_logs_stats();
+        
+        // Get all logs
+        $logs = USGS_Stream_Gage_Logger::get_logs();
+        
+        // Pass logs data to template
+        include_once USGS_STREAM_GAGE_PLUGIN_DIR . 'admin/partials/usgs-stream-gage-admin-logs.php';
+    }
+    
+    /**
+     * AJAX handler for clearing logs.
+     *
+     * @since    1.1.0
+     */
+    public function ajax_clear_logs() {
+        // Check nonce for security
+        check_ajax_referer( 'usgs-ajax-nonce', 'nonce' );
+        
+        // Check user capabilities
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array(
+                'message' => __( 'You do not have permission to perform this action.', 'usgs-stream-gage-data' )
+            ) );
+        }
+        
+        // Clear logs
+        $cleared = USGS_Stream_Gage_Logger::clear_logs();
+        
+        if ( $cleared ) {
+            wp_send_json_success( array(
+                'message' => __( 'Logs cleared successfully.', 'usgs-stream-gage-data' )
+            ) );
+        } else {
+            wp_send_json_error( array(
+                'message' => __( 'Failed to clear logs.', 'usgs-stream-gage-data' )
+            ) );
+        }
+    }
+    
+    /**
+     * Add a menu page to the admin menu.
      *
      * @since    1.0.0
+     * @modified 1.1.0 Changed from add_options_page to add_menu_page for better visibility
      */
-    public function add_options_page() {
-        add_options_page(
+    public function add_menu_page() {
+        add_menu_page(
             __( 'USGS Stream Gage Settings', 'usgs-stream-gage-data' ),
             __( 'USGS Stream Gages', 'usgs-stream-gage-data' ),
             'manage_options',
             $this->plugin_name,
-            array( $this, 'display_options_page' )
+            array( $this, 'display_options_page' ),
+            'dashicons-water',
+            30
         );
     }
 

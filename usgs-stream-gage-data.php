@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: USGS Stream Gage Data
- * Plugin URI: https://example.com/usgs-stream-gage-data
+ * Plugin URI: https://elmills.net/usgs-stream-gage-data
  * Description: A modern WordPress plugin that allows users to specify USGS stream gages and display their data using shortcodes.
- * Version: 1.0.0
- * Author: WordPress User
- * Author URI: https://example.com
+ * Version: 1.1.0
+ * Author: Everette Mills
+ * Author URI: https://elmills.net
  * Text Domain: usgs-stream-gage-data
  * Domain Path: /languages
  * License: GPL-2.0+
@@ -18,7 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define plugin constants
-define( 'USGS_STREAM_GAGE_VERSION', '1.0.0' );
+define( 'USGS_STREAM_GAGE_VERSION', '1.1.0' );
 define( 'USGS_STREAM_GAGE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
