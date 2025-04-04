@@ -202,9 +202,27 @@
         /**
          * Add site to the list of sites
          * 
-         * @param {Object} site Site data object
+         * @param {Object|string} site Site data object or JSON string
          */
         function addSiteToList(site) {
+            // Ensure site is an object
+            if (typeof site === 'string') {
+                try {
+                    site = JSON.parse(site);
+                } catch (e) {
+                    console.error('Failed to parse site data:', e);
+                    showMessage('error', 'Error processing site data. Please try again.');
+                    return;
+                }
+            }
+            
+            // Ensure site is an object before continuing
+            if (typeof site !== 'object' || site === null) {
+                console.error('Invalid site data:', site);
+                showMessage('error', 'Invalid site data format. Please try again.');
+                return;
+            }
+            
             // Generate unique ID if not present
             if (!site.id) {
                 site.id = 'usgs_' + Math.random().toString(36).substr(2, 9);

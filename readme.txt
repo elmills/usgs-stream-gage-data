@@ -3,7 +3,7 @@ Contributors: elmills
 Tags: usgs, stream gage, water data, river, shortcode
 Requires at least: 5.0
 Tested up to: 6.3
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,11 @@ Each parameter can be set to "yes" or "no" to show or hide specific data element
 4. Site search functionality
 
 == Changelog ==
+
+= 1.2.1 =
+* FIX: Added robust error handling in JavaScript to prevent crashes when adding site numbers
+* FIX: Improved type checking in admin JavaScript to handle different data formats
+* FIX: Added consistent logging across all API methods for better troubleshooting
 
 = 1.2.0 =
 * FIX: Corrected initialization order in the admin class to ensure Logger is loaded before API instance

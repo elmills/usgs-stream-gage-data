@@ -170,13 +170,14 @@ class USGS_Stream_Gage_API {
             )
         );
         
-        // Build the API URL
+        // Build the API URL - with less restrictive parameters
         $args = [
             'format' => 'json',
             'siteNameLike' => urlencode( $site_name ),
             'siteStatus' => 'active',
-            'parameterCd' => '00060,00065', // Discharge and gage height
-            'hasDataTypeCd' => 'iv'         // Only sites with instantaneous values
+            // Make parameter filtering less restrictive - allow ANY site with water data
+            'siteType' => 'ST', // Stream sites
+            'hasDataTypeCd' => 'dv' // Daily values (more common than instantaneous)
         ];
         
         // Log the API request
@@ -196,6 +197,17 @@ class USGS_Stream_Gage_API {
             return [];
         }
         
+        // Log the full response for debugging
+        USGS_Stream_Gage_Logger::log(
+            'API Search Response (Raw)',
+            array(
+                'url' => $url,
+                'response_code' => wp_remote_retrieve_response_code( $response ),
+                'response_body_preview' => substr( wp_remote_retrieve_body( $response ), 0, 500 )
+            ),
+            USGS_Stream_Gage_Logger::LOG_LEVEL_DEBUG
+        );
+        
         // Log the response
         USGS_Stream_Gage_Logger::log_response( self::USGS_SITE_SERVICE_URL, $args, $response );
         
@@ -204,15 +216,43 @@ class USGS_Stream_Gage_API {
         
         $sites = [];
         
-        // Extract site information
+        // Extract site information with better error handling
         if ( !empty( $data['value']['sites'] ) ) {
+            // Log the number of sites found
+            USGS_Stream_Gage_Logger::log(
+                'USGS API returned sites',
+                array(
+                    'count' => count( $data['value']['sites'] ),
+                    'search_term' => $site_name
+                ),
+                USGS_Stream_Gage_Logger::LOG_LEVEL_DEBUG
+            );
+            
             foreach ( $data['value']['sites'] as $site ) {
-                $sites[] = [
+                // More robust field checking
+                if ( !isset( $site['siteCode'][0]['value'] ) || !isset( $site['siteName'] ) ) {
+                    continue;
+                }
+                
+                $site_data = [
                     'site_number' => $site['siteCode'][0]['value'],
                     'site_name' => $site['siteName'],
-                    'latitude' => $site['geoLocation']['geogLocation']['latitude'],
-                    'longitude' => $site['geoLocation']['geogLocation']['longitude'],
                 ];
+                
+                // Optional fields with fallbacks
+                if ( isset( $site['geoLocation']['geogLocation']['latitude'] ) ) {
+                    $site_data['latitude'] = $site['geoLocation']['geogLocation']['latitude'];
+                } else {
+                    $site_data['latitude'] = null;
+                }
+                
+                if ( isset( $site['geoLocation']['geogLocation']['longitude'] ) ) {
+                    $site_data['longitude'] = $site['geoLocation']['geogLocation']['longitude'];
+                } else {
+                    $site_data['longitude'] = null;
+                }
+                
+                $sites[] = $site_data;
             }
             
             // Log successful search
@@ -220,16 +260,33 @@ class USGS_Stream_Gage_API {
                 'USGS sites found',
                 array(
                     'search_term' => $site_name,
-                    'sites_found' => count( $sites )
+                    'sites_found' => count( $sites ),
+                    'first_site' => !empty($sites) ? $sites[0]['site_name'] : 'None'
                 )
             );
         } else {
-            // Log no sites found
+            // More detailed error logging
+            $error_details = array(
+                'search_term' => $site_name,
+                'response_code' => wp_remote_retrieve_response_code( $response )
+            );
+            
+            // Check if we can determine why no sites were found
+            if ( isset( $data['value'] ) ) {
+                $error_details['has_value_object'] = true;
+                $error_details['value_keys'] = is_array( $data['value'] ) ? array_keys( $data['value'] ) : 'not an array';
+            } else {
+                $error_details['has_value_object'] = false;
+            }
+            
+            if ( isset( $data['error'] ) ) {
+                $error_details['api_error'] = $data['error'];
+            }
+            
+            // Log no sites found with detailed information
             USGS_Stream_Gage_Logger::log(
                 'No USGS sites found', 
-                array(
-                    'search_term' => $site_name
-                ),
+                $error_details,
                 USGS_Stream_Gage_Logger::LOG_LEVEL_WARNING
             );
         }
@@ -261,18 +318,28 @@ class USGS_Stream_Gage_API {
             'siteStatus' => 'active'
         ];
         
-        $url = add_query_arg( $args, self::USGS_IV_SERVICE_URL );
+        // Log the API request
+        $url = USGS_Stream_Gage_Logger::log_request( self::USGS_IV_SERVICE_URL, $args );
         
         // Make the API request
         $response = wp_remote_get( $url );
         
         // Check for errors
         if ( is_wp_error( $response ) ) {
+            // Log the error
+            USGS_Stream_Gage_Logger::log_error(
+                'API Error getting current data',
+                $response
+            );
+            
             return [
                 'error' => true,
                 'message' => $response->get_error_message()
             ];
         }
+        
+        // Log the response
+        USGS_Stream_Gage_Logger::log_response( self::USGS_IV_SERVICE_URL, $args, $response );
         
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body, true );
@@ -369,18 +436,28 @@ class USGS_Stream_Gage_API {
             'siteStatus' => 'active'
         ];
         
-        $url = add_query_arg( $args, self::USGS_IV_SERVICE_URL );
+        // Log the API request
+        $url = USGS_Stream_Gage_Logger::log_request( self::USGS_IV_SERVICE_URL, $args );
         
         // Make the API request
         $response = wp_remote_get( $url );
         
         // Check for errors
         if ( is_wp_error( $response ) ) {
+            // Log the error
+            USGS_Stream_Gage_Logger::log_error(
+                'API Error getting historical data',
+                $response
+            );
+            
             return [
                 'error' => true,
                 'message' => $response->get_error_message()
             ];
         }
+        
+        // Log the response
+        USGS_Stream_Gage_Logger::log_response( self::USGS_IV_SERVICE_URL, $args, $response );
         
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body, true );
