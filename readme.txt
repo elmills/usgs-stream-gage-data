@@ -75,6 +75,10 @@ This plugin uses the USGS Water Services API:
 * [USGS Instantaneous Values Web Service](https://waterservices.usgs.gov/rest/IV-Service.html)
 * [USGS Site Web Service](https://waterservices.usgs.gov/rest/Site-Service.html)
 
+= 1.2.7 =
+* FEATURE: Improved display of the historical data on various screens
+* BUG FIX: Display issue with Admin Icon
+
 = 1.2.6 =
 * FEATURE: Added automated update
 

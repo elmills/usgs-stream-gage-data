@@ -77,6 +77,10 @@ This plugin uses the USGS Water Services API:
 
 ## Changelog
 
+## 1.2.7
+- FEATURE: Improved display of the historical data on various screens
+- BUG FIX: Display issue with Admin Icon
+
 ## 1.2.6
 - FEATURE: Added automated update
 

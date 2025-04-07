@@ -156,6 +156,46 @@ class USGS_Stream_Gage_Shortcode {
         echo '</table>';
         echo '</div>'; // End current data
         
+        // Add responsive styles for tables
+        echo '<style>
+            /* Responsive styles for USGS Stream Gage data tables */
+            @media screen and (max-width: 768px) {
+                .usgs-historical-table {
+                    width: 100%;
+                }
+                .usgs-historical-table thead {
+                    display: none;
+                }
+                .usgs-historical-table tr {
+                    display: block;
+                    margin-bottom: 1.5em;
+                    border-bottom: 2px solid #ddd;
+                }
+                .usgs-historical-table td {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 6px 8px;
+                    text-align: right;
+                    border-bottom: 1px solid #eee;
+                }
+                .usgs-historical-table td:before {
+                    content: attr(data-label);
+                    font-weight: bold;
+                    float: left;
+                    text-align: left;
+                }
+                .usgs-high, .usgs-low {
+                    flex-direction: column;
+                    align-items: flex-end;
+                }
+                .usgs-datetime {
+                    font-size: 0.9em;
+                    color: #666;
+                    margin-top: 4px;
+                }
+            }
+        </style>';
+        
         // Historical data section
         if ( !empty( $periods ) ) {
             echo '<div class="usgs-historical-data">';
@@ -182,29 +222,33 @@ class USGS_Stream_Gage_Shortcode {
                 if ( !empty( $period_data['error'] ) && $period_data['error'] === true ) {
                     echo '<div class="usgs-error">Error fetching historical data: ' . esc_html( $period_data['message'] ) . '</div>';
                 } else {
-                    echo '<table class="usgs-data-table">';
+                    echo '<table class="usgs-data-table usgs-historical-table">';
                     echo '<thead><tr><th>Measurement</th><th>High</th><th>Date/Time</th><th>Low</th><th>Date/Time</th></tr></thead>';
                     echo '<tbody>';
                     
                     // Discharge data if available and requested
                     if ( $atts['show_discharge'] === 'yes' && !empty( $period_data['discharge']['high'] ) ) {
                         echo '<tr>';
-                        echo '<td>Discharge (' . esc_html( $period_data['discharge']['unit'] ) . ')</td>';
-                        echo '<td class="usgs-high">' . esc_html( $period_data['discharge']['high'] ) . '</td>';
-                        echo '<td>' . esc_html( $this->api->format_date( $period_data['discharge']['high_datetime'] ) ) . '</td>';
-                        echo '<td class="usgs-low">' . esc_html( $period_data['discharge']['low'] ) . '</td>';
-                        echo '<td>' . esc_html( $this->api->format_date( $period_data['discharge']['low_datetime'] ) ) . '</td>';
+                        echo '<td data-label="Measurement">Discharge (' . esc_html( $period_data['discharge']['unit'] ) . ')</td>';
+                        echo '<td data-label="High" class="usgs-high">' . esc_html( $period_data['discharge']['high'] );
+                        echo '<div class="usgs-datetime">' . esc_html( $this->api->format_date( $period_data['discharge']['high_datetime'] ) ) . '</div></td>';
+                        echo '<td data-label="High Date/Time" class="desktop-only">' . esc_html( $this->api->format_date( $period_data['discharge']['high_datetime'] ) ) . '</td>';
+                        echo '<td data-label="Low" class="usgs-low">' . esc_html( $period_data['discharge']['low'] );
+                        echo '<div class="usgs-datetime">' . esc_html( $this->api->format_date( $period_data['discharge']['low_datetime'] ) ) . '</div></td>';
+                        echo '<td data-label="Low Date/Time" class="desktop-only">' . esc_html( $this->api->format_date( $period_data['discharge']['low_datetime'] ) ) . '</td>';
                         echo '</tr>';
                     }
                     
                     // Gage height data if available and requested
                     if ( $atts['show_gage_height'] === 'yes' && !empty( $period_data['gage_height']['high'] ) ) {
                         echo '<tr>';
-                        echo '<td>Gage Height (' . esc_html( $period_data['gage_height']['unit'] ) . ')</td>';
-                        echo '<td class="usgs-high">' . esc_html( $period_data['gage_height']['high'] ) . '</td>';
-                        echo '<td>' . esc_html( $this->api->format_date( $period_data['gage_height']['high_datetime'] ) ) . '</td>';
-                        echo '<td class="usgs-low">' . esc_html( $period_data['gage_height']['low'] ) . '</td>';
-                        echo '<td>' . esc_html( $this->api->format_date( $period_data['gage_height']['low_datetime'] ) ) . '</td>';
+                        echo '<td data-label="Measurement">Gage Height (' . esc_html( $period_data['gage_height']['unit'] ) . ')</td>';
+                        echo '<td data-label="High" class="usgs-high">' . esc_html( $period_data['gage_height']['high'] );
+                        echo '<div class="usgs-datetime">' . esc_html( $this->api->format_date( $period_data['gage_height']['high_datetime'] ) ) . '</div></td>';
+                        echo '<td data-label="High Date/Time" class="desktop-only">' . esc_html( $this->api->format_date( $period_data['gage_height']['high_datetime'] ) ) . '</td>';
+                        echo '<td data-label="Low" class="usgs-low">' . esc_html( $period_data['gage_height']['low'] );
+                        echo '<div class="usgs-datetime">' . esc_html( $this->api->format_date( $period_data['gage_height']['low_datetime'] ) ) . '</div></td>';
+                        echo '<td data-label="Low Date/Time" class="desktop-only">' . esc_html( $this->api->format_date( $period_data['gage_height']['low_datetime'] ) ) . '</td>';
                         echo '</tr>';
                     }
                     
