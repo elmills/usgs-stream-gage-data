@@ -77,6 +77,9 @@ This plugin uses the USGS Water Services API:
 
 ## Changelog
 
+## 1.2.6
+- FEATURE: Added automated update
+
 ### 1.2.5
 - FEATURE: Enhanced visual distinction between time period headers with improved color contrast
 - FEATURE: Improved readability of data tables with better styling for headers and rows

@@ -3,7 +3,7 @@
  * Plugin Name: USGS Stream Gage Data
  * Plugin URI: https://elmills.net/usgs-stream-gage-data
  * Description: A modern WordPress plugin that allows users to specify USGS stream gages and display their data using shortcodes.
- * Version: 1.2.5
+ * Version: 1.2.6
  * Author: Everette Mills
  * Author URI: https://elmills.net
  * Text Domain: usgs-stream-gage-data
@@ -18,49 +18,21 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define plugin constants
-define( 'USGS_STREAM_GAGE_VERSION', '1.2.5' );
+define( 'USGS_STREAM_GAGE_VERSION', '1.2.6' );
 define( 'USGS_STREAM_GAGE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'USGS_STREAM_GAGE_FONTAWESOME_URL', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css' );
 
+
 // Include required files
 require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-usgs-stream-gage.php';
-
-// Include the Plugin Update Checker library
-$pucPath = USGS_STREAM_GAGE_PLUGIN_DIR . 'plugin-update-checker-5.2/plugin-update-checker.php';
-if (file_exists($pucPath)) {
-    require_once $pucPath;
-} else {
-    // Log error if the file is missing
-    if (function_exists('error_log')) {
-        error_log('Plugin Update Checker library not found at path: ' . $pucPath);
-    }
-}
 
 // Initialize the plugin
 function usgs_stream_gage_init() {
     // Run the core plugin
     $plugin = new USGS_Stream_Gage();
     $plugin->run();
-    
-    // Set up GitHub updater with hardcoded repository URL
-    $github_repo = 'elmills/usgs-stream-gage-data';
-    
-    // Initialize the updater with the GitHub repository
-    if (class_exists('Puc_v5p2_Factory')) {
-        $updateChecker = Puc_v5p2_Factory::buildUpdateChecker(
-            'https://github.com/' . $github_repo . '/',
-            __FILE__,
-            'usgs-stream-gage-data'
-        );
-
-        // Set the branch that contains the stable release
-        $updateChecker->setBranch('main');
-        
-        // Optional: Enable release assets instead of using source code zip
-        $updateChecker->getVcsApi()->enableReleaseAssets();
-    }
 }
 add_action( 'plugins_loaded', 'usgs_stream_gage_init' );
 
@@ -80,4 +52,43 @@ function usgs_stream_gage_activate() {
  */
 function usgs_stream_gage_deactivate() {
     // Deactivation code here
+}
+
+/**
+ * Setup plugin updates from GitHub.
+ */
+if (file_exists(USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-github-plugin-info.php')) {
+    require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-github-plugin-info.php';
+    
+    // Initialize the GitHub updater
+    if (class_exists('GitHub_Plugin_Updater')) {
+        // Define the GitHub repository URL for your plugin
+        $github_repo_url = 'https://github.com/elmills/usgs-stream-gage-data';
+        
+        // Set the plugin metadata for the updater
+        $plugin_metadata = [
+            'contributors' => 'elmills',
+            'donate_link' => 'https://blueboatsolutions.com/donate',
+            'tags' => 'wordpress, plugin, template, base',
+            'requires_php' => '8.0',
+            'license' => 'GPLv2 or later',
+            'license_uri' => 'https://www.gnu.org/licenses/gpl-2.0.html'
+        ];
+        
+        // GitHub token for read-only access to updates
+        // The hardcoded token will be used, but if it's removed (empty), it will default to null
+        $token_value = '';
+        $github_read_only_token = !empty($token_value) ? $token_value : null;
+        
+        // Initialize the updater
+        // Parameters: plugin file, plugin slug, GitHub repo URL, branch name (default: main), access token, metadata
+        new GitHub_Plugin_Updater(
+            __FILE__,
+            'usgs-stream-gage-data',
+            $github_repo_url,
+            'main',
+            $github_read_only_token, // Will be null if no token is provided
+            $plugin_metadata
+        );
+    }
 }

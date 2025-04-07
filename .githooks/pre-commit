@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Check if README.md is staged
+if git diff --cached --name-only | grep -q "README.md"; then
+  echo "README.md is staged, running python-converter.py..."
+  
+  # Run the conversion script with proper arguments
+  python .github/scripts/python-converter.py --input README.md --output readme.txt
+  
+  # Re-add readme.txt to ensure the changes are included in the commit
+  git add readme.txt
+fi

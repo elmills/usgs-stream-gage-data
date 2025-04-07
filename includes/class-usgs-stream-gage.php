@@ -93,6 +93,9 @@ class USGS_Stream_Gage {
         // The class responsible for defining shortcode functionality.
         require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-usgs-stream-gage-shortcode.php';
 
+        // The class responsible for defining shortcode functionality.
+        require_once USGS_STREAM_GAGE_PLUGIN_DIR . 'includes/class-github-plugin-info.php';
+
         $this->loader = new USGS_Stream_Gage_Loader();
     }
 
