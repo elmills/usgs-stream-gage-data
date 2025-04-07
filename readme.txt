@@ -64,6 +64,84 @@ The plugin caches data for performance. Current readings are cached for 15 minut
 **Does this plugin work outside the United States?:**
 No, this plugin specifically connects to the USGS water services API, which only provides data for sites within the United States.
 
+== Changelog ==
+
+= 1.2.8 =
+
+* FEATURE: Documentation Improvement
+
+= 1.2.7 =
+
+* FEATURE: Improved display of the historical data on various screens
+* BUG FIX: Display issue with Admin Icon
+
+= 1.2.6 =
+
+* FEATURE: Added automated update
+
+= 1.2.5 =
+
+* FEATURE: Enhanced visual distinction between time period headers with improved color contrast
+* FEATURE: Improved readability of data tables with better styling for headers and rows
+* FEATURE: Optimized CSS for better visual hierarchy in shortcode output
+* FIX: Corrected admin menu icon display issue using Font Awesome water icon
+* FIX: Improved SVG icon handling in WordPress admin interface
+
+= 1.2.4 =
+
+* FIX: Improved data caching mechanism for better performance
+* FIX: Resolved compatibility issues with PHP 8.1
+* FIX: Enhanced error handling for API timeout scenarios
+* FEATURE: Added more detailed logging for API requests
+* FEATURE: Optimized database queries for settings retrieval
+
+= 1.2.3 =
+
+* Fixed site validation cache handling
+* Improved error checking for cached validation data
+* Better handling of malformed cached data
+* Converted README to Markdown format for better GitHub display
+
+= 1.2.2 =
+
+* FIX: Improved site validation process with better error handling
+* FIX: Enhanced error handling in admin JavaScript interface
+* FIX: Resolved UI issues when adding stream gage sites by number or search
+* FIX: Optimized AJAX request processing for better performance
+* FIX: Added robust type checking to prevent crashes with malformed data
+* FEATURE: Updated automatic GitHub updates library to latest version
+
+= 1.2.1 =
+
+* FIX: Added robust error handling in JavaScript to prevent crashes when adding site numbers
+* FIX: Improved type checking in admin JavaScript to handle different data formats
+* FIX: Added consistent logging across all API methods for better troubleshooting
+
+= 1.2.0 =
+
+* FIX: Corrected initialization order in the admin class to ensure Logger is loaded before API instance
+* FIX: Added proper declaration of cache_expiration property in API class
+* FIX: Resolved issues with site validation not working correctly
+* FIX: Fixed bug that prevented sites from being added to the Current Sites list
+* FEATURE: Added GitHub updates support for managing plugin updates directly from a GitHub repository
+
+= 1.1.0 =
+
+* FEATURE: Moved plugin menu from Settings submenu to top-level admin menu for better visibility
+* FEATURE: Added comprehensive API logging system for troubleshooting site validation and search issues
+* FEATURE: Added "API Logs" tab in admin interface with filtering capabilities
+* FEATURE: Log entries are color-coded by level (Info, Debug, Warning, Error) for easier scanning
+* FEATURE: Added ability to clear logs when needed
+
+= 1.0.0 =
+
+* Initial release
+
+== Upgrade Notice ==
+
+= 1.2.8 =
+Update to version 1.2.8. Includes improvements and/or new features. See changelog for details.
+
 == License ==
 
 This plugin is licensed under the GPL v2 or later.
@@ -75,62 +153,5 @@ This plugin uses the USGS Water Services API:
 * [USGS Instantaneous Values Web Service](https://waterservices.usgs.gov/rest/IV-Service.html)
 * [USGS Site Web Service](https://waterservices.usgs.gov/rest/Site-Service.html)
 
-= 1.2.7 =
-* FEATURE: Improved display of the historical data on various screens
-* BUG FIX: Display issue with Admin Icon
-
-= 1.2.6 =
-* FEATURE: Added automated update
-
-**1.2.5**
-* FEATURE: Enhanced visual distinction between time period headers with improved color contrast
-* FEATURE: Improved readability of data tables with better styling for headers and rows
-* FEATURE: Optimized CSS for better visual hierarchy in shortcode output
-* FIX: Corrected admin menu icon display issue using Font Awesome water icon
-* FIX: Improved SVG icon handling in WordPress admin interface
-
-**1.2.4**
-* FIX: Improved data caching mechanism for better performance
-* FIX: Resolved compatibility issues with PHP 8.1
-* FIX: Enhanced error handling for API timeout scenarios
-* FEATURE: Added more detailed logging for API requests
-* FEATURE: Optimized database queries for settings retrieval
-
-**1.2.3**
-* Fixed site validation cache handling
-* Improved error checking for cached validation data
-* Better handling of malformed cached data
-* Converted README to Markdown format for better GitHub display
-
-**1.2.2**
-* FIX: Improved site validation process with better error handling
-* FIX: Enhanced error handling in admin JavaScript interface
-* FIX: Resolved UI issues when adding stream gage sites by number or search
-* FIX: Optimized AJAX request processing for better performance
-* FIX: Added robust type checking to prevent crashes with malformed data
-* FEATURE: Updated automatic GitHub updates library to latest version
-
-**1.2.1**
-* FIX: Added robust error handling in JavaScript to prevent crashes when adding site numbers
-* FIX: Improved type checking in admin JavaScript to handle different data formats
-* FIX: Added consistent logging across all API methods for better troubleshooting
-
-**1.2.0**
-* FIX: Corrected initialization order in the admin class to ensure Logger is loaded before API instance
-* FIX: Added proper declaration of cache_expiration property in API class
-* FIX: Resolved issues with site validation not working correctly
-* FIX: Fixed bug that prevented sites from being added to the Current Sites list
-* FEATURE: Added GitHub updates support for managing plugin updates directly from a GitHub repository
-
-**1.1.0**
-* FEATURE: Moved plugin menu from Settings submenu to top-level admin menu for better visibility
-* FEATURE: Added comprehensive API logging system for troubleshooting site validation and search issues
-* FEATURE: Added "API Logs" tab in admin interface with filtering capabilities
-* FEATURE: Log entries are color-coded by level (Info, Debug, Warning, Error) for easier scanning
-* FEATURE: Added ability to clear logs when needed
-
-**1.0.0**
-* Initial release
-
 = Credits =
-Developed by Blue Boat Partners LLC
+Developed by Blueboat Solutions LLC

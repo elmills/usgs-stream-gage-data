@@ -54,34 +54,16 @@ Perfect for outdoor recreation sites, environmental monitoring, educational webs
 - `show_historical`: Show historical data, true/false (default: true)
 - `periods`: Comma-separated list of periods to display - 24h, 7d, 30d, 1y (default: all periods)
 
-## Frequently Asked Questions
-
-### Where can I find USGS site numbers?
-
-You can search for sites directly from the plugin's settings page, or visit the [USGS Water Data site](https://waterdata.usgs.gov/nwis/rt) to search for monitoring stations by state, watershed, or other criteria.
-
-### How often is the data updated?
-
-The plugin caches data for performance. Current readings are cached for 15 minutes, while historical data is cached for periods ranging from 30 minutes to 4 hours, depending on the time range.
-
-### Does this plugin work outside the United States?
-
-No, this plugin specifically connects to the USGS water services API, which only provides data for sites within the United States.
-
-## API Reference
-
-This plugin uses the USGS Water Services API:
-- [USGS Water Services](https://waterservices.usgs.gov/)
-- [USGS Instantaneous Values Web Service](https://waterservices.usgs.gov/rest/IV-Service.html)
-- [USGS Site Web Service](https://waterservices.usgs.gov/rest/Site-Service.html)
-
 ## Changelog
 
-## 1.2.7
+### 1.2.8
+- FEATURE: Documentation Improvement
+
+### 1.2.7
 - FEATURE: Improved display of the historical data on various screens
 - BUG FIX: Display issue with Admin Icon
 
-## 1.2.6
+### 1.2.6
 - FEATURE: Added automated update
 
 ### 1.2.5
@@ -134,10 +116,33 @@ This plugin uses the USGS Water Services API:
 ### 1.0.0
 - Initial release
 
+
+## Frequently Asked Questions
+
+### Where can I find USGS site numbers?
+
+You can search for sites directly from the plugin's settings page, or visit the [USGS Water Data site](https://waterdata.usgs.gov/nwis/rt) to search for monitoring stations by state, watershed, or other criteria.
+
+### How often is the data updated?
+
+The plugin caches data for performance. Current readings are cached for 15 minutes, while historical data is cached for periods ranging from 30 minutes to 4 hours, depending on the time range.
+
+### Does this plugin work outside the United States?
+
+No, this plugin specifically connects to the USGS water services API, which only provides data for sites within the United States.
+
+## API Reference
+
+This plugin uses the USGS Water Services API:
+- [USGS Water Services](https://waterservices.usgs.gov/)
+- [USGS Instantaneous Values Web Service](https://waterservices.usgs.gov/rest/IV-Service.html)
+- [USGS Site Web Service](https://waterservices.usgs.gov/rest/Site-Service.html)
+
+
 ## License
 
 This plugin is licensed under the GPL v2 or later.
 
 ## Credits
 
-Developed by Blue Boat Partners LLC
+Developed by Blueboat Solutions LLC
